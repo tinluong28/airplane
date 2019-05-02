@@ -56,15 +56,25 @@
             }
             drawPlayer();
 
-            const drawEnemies = () => {
+            const drawEnemies = (enemies) => {
                 let content="";
-                enemies.map((enemy, idx) => {
-                    content += "<div class='enemies' style='left:"+enemies[idx].left+"px; top:"+enemies[idx].top+"px'></div>"
-                })
+                if(enemies[enemies.length -1].top < 480){
+                    enemies.map((enemy, idx) => {
+                        content += "<div class='enemies' style='left:"+enemies[idx].left+"px; top:"+enemies[idx].top+"px'></div>"
+                    })
+                } else {
+                    content = "";
+                }
+                
                 document.getElementById("enemies").innerHTML = content;
             }
-            drawEnemies();
+            
+            const newRound = () => {
+                drawEnemies(enemies);
+                setTimeout(newRound, 5000)
+            }
 
+            newRound();
             document.onkeydown = (e) => {
                 if(e.keyCode === 39 && player.left < 820) {
                     player.left += 10;
@@ -77,6 +87,20 @@
                 }
                 drawPlayer()
             }
+            
+            const gameLoop = () => {
+                let roundEnemies = enemies;
+                roundEnemies = roundEnemies.map(enemy =>{
+                    enemy.top +=10;
+                    enemy.left = enemy.left
+                    return enemy;
+                    });
+                drawEnemies(roundEnemies);
+                setTimeout(gameLoop, 500);
+
+            }
+            gameLoop();
+
             
         </script>
 
