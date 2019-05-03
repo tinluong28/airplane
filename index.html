@@ -24,14 +24,17 @@
                 width: 75px;
                 height: 75px;
             }
+            .missiles {
+                position: absolute;
+                background-color: red;
+                width: 2px;
+                height: 10px;
+            }
         </style>        
         <div id="ocean">
-            <div id="player">
-
-            </div>
-            <div id="enemies">
-                
-            </div>
+            <div id="player"></div>
+            <div id="enemies"></div>
+            <div id="missiles"></div>
         </div>
         
         <script type="text/javascript">
@@ -48,33 +51,45 @@
                 {left: 300, top: 150},
                 {left: 400, top: 150},
                 {left: 500, top: 150}
-            ]
+            ];
+
+            let missiles = [];
             
             const drawPlayer = () => {
                 let content = "<div class='player' style='left:"+player.left+"px; top:"+player.top+"px'></div>";
                 document.getElementById('player').innerHTML = content;
             }
-            drawPlayer();
 
-            const drawEnemies = (enemies) => {
+            const drawEnemies = () => {
                 let content="";
-                if(enemies[enemies.length -1].top < 480){
+ 
                     enemies.map((enemy, idx) => {
-                        content += "<div class='enemies' style='left:"+enemies[idx].left+"px; top:"+enemies[idx].top+"px'></div>"
+                        if(enemy.top < 450) {
+                            content += "<div class='enemies' style='left:"+enemies[idx].left+"px; top:"+enemies[idx].top+"px'></div>";
+                            }
                     })
-                } else {
-                    content = "";
-                }
+      
                 
                 document.getElementById("enemies").innerHTML = content;
             }
             
-            const newRound = () => {
-                drawEnemies(enemies);
-                setTimeout(newRound, 5000)
+            const drawMissiles = () => {
+                let content = "";
+                missiles.map((missile, idx) => {
+                    content += "<div class='missiles' style='left:"+missiles[idx].left+"px; top:"+missiles[idx].top+"px'></div>";
+                })
+                document.getElementById("missiles").innerHTML = content;
             }
+            // let round = [];
+            // const newRound = () => {
+                
+            //     return round.push(enemies);
+            //     setTimeout(newRound,2000)
+            // }
 
-            newRound();
+            
+
+     
             document.onkeydown = (e) => {
                 if(e.keyCode === 39 && player.left < 820) {
                     player.left += 10;
@@ -84,21 +99,34 @@
                     player.top -= 10;
                 } else if(e.keyCode === 40 && player.top < 450) {
                     player.top += 10;
+                } else if(e.keyCode === 32) {
+                    missiles = missiles.push({left: (player.left + 34), top: (player.top - 9)});
+                    drawMissiles();
                 }
                 drawPlayer()
-            }
+            };
+
+            const moveEnemies = () => {
+                enemies.map((enemy, idx) =>{
+                    enemies[idx].top +=10;
+                    });
+            };
+
+            // const enemyRound = () => {
+
+            //     moveEnemies();
+            //     drawEnemies();
+            //     setTimeout(enemyRound, 3000);
+            // };
             
             const gameLoop = () => {
-                let roundEnemies = enemies;
-                roundEnemies = roundEnemies.map(enemy =>{
-                    enemy.top +=10;
-                    enemy.left = enemy.left
-                    return enemy;
-                    });
-                drawEnemies(roundEnemies);
+
+                drawPlayer();
+                moveEnemies();
+                drawEnemies();
                 setTimeout(gameLoop, 500);
 
-            }
+            };
             gameLoop();
 
             
