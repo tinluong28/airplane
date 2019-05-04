@@ -74,7 +74,7 @@
             }
             
             const drawMissiles = () => {
-                let content = "";
+                let content="";
                 missiles.map((missile, idx) => {
                     content += "<div class='missiles' style='left:"+missiles[idx].left+"px; top:"+missiles[idx].top+"px'></div>";
                 })
@@ -100,7 +100,8 @@
                 } else if(e.keyCode === 40 && player.top < 450) {
                     player.top += 10;
                 } else if(e.keyCode === 32) {
-                    missiles = missiles.push({left: (player.left + 34), top: (player.top - 9)});
+
+                    missiles.push({left: player.left+34, top: player.top-9});
                     drawMissiles();
                 }
                 drawPlayer()
@@ -108,10 +109,17 @@
 
             const moveEnemies = () => {
                 enemies.map((enemy, idx) =>{
-                    enemies[idx].top +=10;
+                    enemies[idx].top +=1;
                     });
             };
 
+            const moveMissiles = () => {
+                missiles.map((missile, idx) => {
+                    missiles[idx].top-=2  ;
+                })
+            }
+
+ 
             // const enemyRound = () => {
 
             //     moveEnemies();
@@ -122,9 +130,11 @@
             const gameLoop = () => {
 
                 drawPlayer();
+                moveMissiles();
+
                 moveEnemies();
                 drawEnemies();
-                setTimeout(gameLoop, 500);
+                setTimeout(gameLoop, 10);
 
             };
             gameLoop();
